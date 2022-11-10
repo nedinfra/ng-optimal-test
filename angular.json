@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/optimal",
+            "outputPath": "dist/optimal/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -28,7 +28,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+
             ],
             "scripts": []
           },
@@ -96,9 +96,99 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+
             ],
             "scripts": []
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/optimal/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json",
+            "inlineStyleLanguage": "scss"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "optimal:build:development",
+              "serverTarget": "optimal:server:development"
+            },
+            "production": {
+              "browserTarget": "optimal:build:production",
+              "serverTarget": "optimal:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "optimal:build:production",
+              "serverTarget": "optimal:server:production"
+            },
+            "development": {
+              "browserTarget": "optimal:build:development",
+              "serverTarget": "optimal:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
+        }
+      }
+    },
+    "babylon": {
+      "projectType": "library",
+      "root": "projects/babylon",
+      "sourceRoot": "projects/babylon/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/babylon/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/babylon/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/babylon/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/babylon/src/test.ts",
+            "tsConfig": "projects/babylon/tsconfig.spec.json",
+            "karmaConfig": "projects/babylon/karma.conf.js"
           }
         }
       }
